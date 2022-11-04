@@ -24,6 +24,7 @@
     in
     rec {
       devShells.${system}.default = with pkgs; mkShell {
+        nativeBuildInputs = [ pkgconfig openssl ];
         buildInputs = [ rust_pinned.toolchain ];
       };
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;

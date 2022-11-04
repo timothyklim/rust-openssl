@@ -202,7 +202,7 @@ impl Md {
 /// A reference to an [`Md`].
 pub struct MdRef(Opaque);
 
-impl ForeignTypeRef for MdRef {
+unsafe impl ForeignTypeRef for MdRef {
     type CType = ffi::EVP_MD;
 }
 

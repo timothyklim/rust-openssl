@@ -1,5 +1,5 @@
 use bitflags::bitflags;
-use foreign_types::ForeignTypeRef;
+use foreign_types::{ForeignType, ForeignTypeRef};
 use libc::{c_int, c_long, c_ulong};
 use std::mem;
 use std::ptr;
@@ -233,7 +233,7 @@ impl OcspCertId {
                 subject.as_ptr(),
                 issuer.as_ptr(),
             ))
-            .map(OcspCertId)
+            .map(|ptr| OcspCertId::from_ptr(ptr))
         }
     }
 }
@@ -262,7 +262,7 @@ impl OcspResponse {
                 status.as_raw(),
                 body.map(|r| r.as_ptr()).unwrap_or(ptr::null_mut()),
             ))
-            .map(OcspResponse)
+            .map(|ptr| OcspResponse::from_ptr(ptr))
         }
     }
 
@@ -294,7 +294,10 @@ impl OcspResponseRef {
     /// This will only succeed if `status()` returns `RESPONSE_STATUS_SUCCESSFUL`.
     #[corresponds(OCSP_response_get1_basic)]
     pub fn basic(&self) -> Result<OcspBasicResponse, ErrorStack> {
-        unsafe { cvt_p(ffi::OCSP_response_get1_basic(self.as_ptr())).map(OcspBasicResponse) }
+        unsafe {
+            cvt_p(ffi::OCSP_response_get1_basic(self.as_ptr()))
+                .map(|ptr| OcspBasicResponse::from_ptr(ptr))
+        }
     }
 }
 
@@ -312,7 +315,7 @@ impl OcspRequest {
         unsafe {
             ffi::init();
 
-            cvt_p(ffi::OCSP_REQUEST_new()).map(OcspRequest)
+            cvt_p(ffi::OCSP_REQUEST_new()).map(|ptr| OcspRequest::from_ptr(ptr))
         }
     }
 

@@ -412,7 +412,7 @@ impl<T> PKey<T> {
         unsafe {
             let evp = cvt_p(ffi::EVP_PKEY_new())?;
             let pkey = PKey::from_ptr(evp);
-            cvt(ffi::EVP_PKEY_assign_RSA(pkey.0, rsa.as_ptr()))?;
+            cvt(ffi::EVP_PKEY_assign_RSA(pkey.as_ptr(), rsa.as_ptr()))?;
             mem::forget(rsa);
             Ok(pkey)
         }
@@ -424,7 +424,7 @@ impl<T> PKey<T> {
         unsafe {
             let evp = cvt_p(ffi::EVP_PKEY_new())?;
             let pkey = PKey::from_ptr(evp);
-            cvt(ffi::EVP_PKEY_assign_DSA(pkey.0, dsa.as_ptr()))?;
+            cvt(ffi::EVP_PKEY_assign_DSA(pkey.as_ptr(), dsa.as_ptr()))?;
             mem::forget(dsa);
             Ok(pkey)
         }
@@ -437,7 +437,7 @@ impl<T> PKey<T> {
         unsafe {
             let evp = cvt_p(ffi::EVP_PKEY_new())?;
             let pkey = PKey::from_ptr(evp);
-            cvt(ffi::EVP_PKEY_assign_DH(pkey.0, dh.as_ptr()))?;
+            cvt(ffi::EVP_PKEY_assign_DH(pkey.as_ptr(), dh.as_ptr()))?;
             mem::forget(dh);
             Ok(pkey)
         }
@@ -465,7 +465,7 @@ impl<T> PKey<T> {
         unsafe {
             let evp = cvt_p(ffi::EVP_PKEY_new())?;
             let pkey = PKey::from_ptr(evp);
-            cvt(ffi::EVP_PKEY_assign_EC_KEY(pkey.0, ec_key.as_ptr()))?;
+            cvt(ffi::EVP_PKEY_assign_EC_KEY(pkey.as_ptr(), ec_key.as_ptr()))?;
             mem::forget(ec_key);
             Ok(pkey)
         }

@@ -554,7 +554,7 @@ impl Cipher {
 /// A reference to a [`Cipher`].
 pub struct CipherRef(Opaque);
 
-impl ForeignTypeRef for CipherRef {
+unsafe impl ForeignTypeRef for CipherRef {
     type CType = ffi::EVP_CIPHER;
 }
 
