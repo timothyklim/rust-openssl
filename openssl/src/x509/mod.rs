@@ -1031,7 +1031,7 @@ impl X509Extension {
         value: *mut c_void,
     ) -> Result<X509Extension, ErrorStack> {
         ffi::init();
-        cvt_p(ffi::X509V3_EXT_i2d(nid.as_raw(), critical as _, value)).map(X509Extension)
+        cvt_p(ffi::X509V3_EXT_i2d(nid.as_raw(), critical as _, value)).map(|ptr| X509Extension::from_ptr(ptr))
     }
 
     /// Adds an alias for an extension
@@ -2531,7 +2531,7 @@ impl X509PurposeId {
 pub struct X509PurposeRef(Opaque);
 
 /// Implements a wrapper type for the static `X509_PURPOSE` table in OpenSSL.
-impl ForeignTypeRef for X509PurposeRef {
+unsafe impl ForeignTypeRef for X509PurposeRef {
     type CType = ffi::X509_PURPOSE;
 }
 

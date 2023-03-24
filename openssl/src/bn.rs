@@ -1138,7 +1138,11 @@ impl BigNum {
         unsafe {
             assert!(n.len() <= LenType::max_value() as usize);
 
-            cvt_p(ffi::BN_bin2bn(n.as_ptr(), n.len() as LenType, self.as_ptr()))?;
+            cvt_p(ffi::BN_bin2bn(
+                n.as_ptr(),
+                n.len() as LenType,
+                self.as_ptr(),
+            ))?;
             Ok(())
         }
     }
