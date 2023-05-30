@@ -79,7 +79,7 @@ impl Dh<Params> {
     /// Sets the public key on the DH object.
     pub fn set_public_key(self, pub_key: BigNum) -> Result<Dh<Public>, ErrorStack> {
         unsafe {
-            let dh_ptr = self.0;
+            let dh_ptr = self.as_ptr();
             cvt(DH_set0_key(dh_ptr, pub_key.as_ptr(), ptr::null_mut()))?;
             mem::forget((self, pub_key));
             Ok(Dh::from_ptr(dh_ptr))
@@ -102,7 +102,7 @@ impl Dh<Params> {
     /// Sets the public and private keys on the DH object.
     pub fn set_key(self, pub_key: BigNum, priv_key: BigNum) -> Result<Dh<Private>, ErrorStack> {
         unsafe {
-            let dh_ptr = self.0;
+            let dh_ptr = self.as_ptr();
             cvt(DH_set0_key(dh_ptr, pub_key.as_ptr(), priv_key.as_ptr()))?;
             mem::forget((self, pub_key, priv_key));
             Ok(Dh::from_ptr(dh_ptr))

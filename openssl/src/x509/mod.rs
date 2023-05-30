@@ -1021,7 +1021,7 @@ impl X509Extension {
                 critical as _,
                 der_contents.as_ptr(),
             ))
-            .map(X509Extension)
+            .map(|ptr| X509Extension::from_ptr(ptr))
         }
     }
 
