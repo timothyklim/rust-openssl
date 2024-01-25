@@ -31,7 +31,7 @@ cfg_if! {
             }
         }
 
-        impl ForeignType for Md {
+        unsafe impl ForeignType for Md {
             type CType = ffi::EVP_MD;
             type Ref = MdRef;
 

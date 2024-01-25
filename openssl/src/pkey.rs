@@ -450,7 +450,7 @@ impl<T> PKey<T> {
             let evp = cvt_p(ffi::EVP_PKEY_new())?;
             let pkey = PKey::from_ptr(evp);
             cvt(ffi::EVP_PKEY_assign(
-                pkey.0,
+                pkey.as_ptr(),
                 ffi::EVP_PKEY_DHX,
                 dh.as_ptr().cast(),
             ))?;
