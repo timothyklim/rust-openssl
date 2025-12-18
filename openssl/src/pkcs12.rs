@@ -257,7 +257,7 @@ impl Pkcs12Builder {
                 self.mac_iter,
                 keytype,
             ))
-            .map(Pkcs12)?;
+            .map(|ptr| Pkcs12::from_ptr(ptr))?;
 
             #[cfg(not(any(boringssl, awslc_fips)))]
             // BoringSSL does not support overriding the MAC and will always

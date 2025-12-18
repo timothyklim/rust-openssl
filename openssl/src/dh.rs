@@ -66,7 +66,7 @@ impl Dh<Params> {
         unsafe {
             let dh = Dh::from_ptr(cvt_p(ffi::DH_new())?);
             cvt(DH_set0_pqg(
-                dh.0,
+                dh.as_ptr(),
                 prime_p.as_ptr(),
                 prime_q.as_ref().map_or(ptr::null_mut(), |q| q.as_ptr()),
                 generator.as_ptr(),
@@ -79,7 +79,7 @@ impl Dh<Params> {
     /// Sets the public key on the DH object.
     pub fn set_public_key(self, pub_key: BigNum) -> Result<Dh<Public>, ErrorStack> {
         unsafe {
-            let dh_ptr = self.0;
+            let dh_ptr = self.as_ptr();
             cvt(DH_set0_key(dh_ptr, pub_key.as_ptr(), ptr::null_mut()))?;
             mem::forget((self, pub_key));
             Ok(Dh::from_ptr(dh_ptr))
@@ -89,7 +89,7 @@ impl Dh<Params> {
     /// Sets the private key on the DH object and recomputes the public key.
     pub fn set_private_key(self, priv_key: BigNum) -> Result<Dh<Private>, ErrorStack> {
         unsafe {
-            let dh_ptr = self.0;
+            let dh_ptr = self.as_ptr();
             cvt(DH_set0_key(dh_ptr, ptr::null_mut(), priv_key.as_ptr()))?;
             mem::forget(priv_key);
 
@@ -102,7 +102,7 @@ impl Dh<Params> {
     /// Sets the public and private keys on the DH object.
     pub fn set_key(self, pub_key: BigNum, priv_key: BigNum) -> Result<Dh<Private>, ErrorStack> {
         unsafe {
-            let dh_ptr = self.0;
+            let dh_ptr = self.as_ptr();
             cvt(DH_set0_key(dh_ptr, pub_key.as_ptr(), priv_key.as_ptr()))?;
             mem::forget((self, pub_key, priv_key));
             Ok(Dh::from_ptr(dh_ptr))
@@ -115,7 +115,7 @@ impl Dh<Params> {
         unsafe {
             let dh = Dh::from_ptr(cvt_p(ffi::DH_new())?);
             cvt(ffi::DH_generate_parameters_ex(
-                dh.0,
+                dh.as_ptr(),
                 prime_len as i32,
                 generator as i32,
                 ptr::null_mut(),
@@ -128,7 +128,7 @@ impl Dh<Params> {
     #[corresponds(DH_generate_key)]
     pub fn generate_key(self) -> Result<Dh<Private>, ErrorStack> {
         unsafe {
-            let dh_ptr = self.0;
+            let dh_ptr = self.as_ptr();
             cvt(ffi::DH_generate_key(dh_ptr))?;
             mem::forget(self);
             Ok(Dh::from_ptr(dh_ptr))

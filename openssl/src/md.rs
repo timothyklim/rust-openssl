@@ -31,7 +31,7 @@ cfg_if! {
             }
         }
 
-        impl ForeignType for Md {
+        unsafe impl ForeignType for Md {
             type CType = ffi::EVP_MD;
             type Ref = MdRef;
 
@@ -204,7 +204,7 @@ impl Md {
 /// A reference to an [`Md`].
 pub struct MdRef(Opaque);
 
-impl ForeignTypeRef for MdRef {
+unsafe impl ForeignTypeRef for MdRef {
     type CType = ffi::EVP_MD;
 }
 

@@ -1,5 +1,5 @@
 use bitflags::bitflags;
-use foreign_types::ForeignTypeRef;
+use foreign_types::{ForeignType, ForeignTypeRef};
 use libc::{c_int, c_uint, c_ulong, time_t};
 use std::net::IpAddr;
 
@@ -78,7 +78,7 @@ impl X509VerifyParam {
     pub fn new() -> Result<X509VerifyParam, ErrorStack> {
         unsafe {
             ffi::init();
-            cvt_p(ffi::X509_VERIFY_PARAM_new()).map(X509VerifyParam)
+            cvt_p(ffi::X509_VERIFY_PARAM_new()).map(|ptr| X509VerifyParam::from_ptr(ptr))
         }
     }
 }

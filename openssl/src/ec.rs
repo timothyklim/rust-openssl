@@ -141,7 +141,7 @@ impl EcGroup {
     pub fn from_curve_name(nid: Nid) -> Result<EcGroup, ErrorStack> {
         unsafe {
             init();
-            cvt_p(ffi::EC_GROUP_new_by_curve_name(nid.as_raw())).map(EcGroup)
+            cvt_p(ffi::EC_GROUP_new_by_curve_name(nid.as_raw())).map(|ptr| EcGroup::from_ptr(ptr))
         }
     }
 
@@ -160,7 +160,7 @@ impl EcGroup {
                 b.as_ptr(),
                 ctx.as_ptr(),
             ))
-            .map(EcGroup)
+            .map(|ptr| EcGroup::from_ptr(ptr))
         }
     }
 }
@@ -494,7 +494,10 @@ impl EcPointRef {
     /// Creates a new point on the specified curve with the same value.
     #[corresponds(EC_POINT_dup)]
     pub fn to_owned(&self, group: &EcGroupRef) -> Result<EcPoint, ErrorStack> {
-        unsafe { cvt_p(ffi::EC_POINT_dup(self.as_ptr(), group.as_ptr())).map(EcPoint) }
+        unsafe {
+            cvt_p(ffi::EC_POINT_dup(self.as_ptr(), group.as_ptr()))
+                .map(|ptr| EcPoint::from_ptr(ptr))
+        }
     }
 
     /// Determines if this point is equal to another.
@@ -660,7 +663,7 @@ impl EcPoint {
     /// Creates a new point on the specified curve.
     #[corresponds(EC_POINT_new)]
     pub fn new(group: &EcGroupRef) -> Result<EcPoint, ErrorStack> {
-        unsafe { cvt_p(ffi::EC_POINT_new(group.as_ptr())).map(EcPoint) }
+        unsafe { cvt_p(ffi::EC_POINT_new(group.as_ptr())).map(|ptr| EcPoint::from_ptr(ptr)) }
     }
 
     /// Creates point from a binary representation

@@ -110,8 +110,8 @@ impl Pkcs7 {
         let input_bio = MemBioSlice::new(input)?;
         let mut bcont_bio = ptr::null_mut();
         unsafe {
-            let pkcs7 =
-                cvt_p(ffi::SMIME_read_PKCS7(input_bio.as_ptr(), &mut bcont_bio)).map(Pkcs7)?;
+            let pkcs7 = cvt_p(ffi::SMIME_read_PKCS7(input_bio.as_ptr(), &mut bcont_bio))
+                .map(|ptr| Pkcs7::from_ptr(ptr))?;
             let out = if !bcont_bio.is_null() {
                 let bcont_bio = MemBio::from_ptr(bcont_bio);
                 Some(bcont_bio.get_buf().to_vec())
@@ -143,7 +143,7 @@ impl Pkcs7 {
                 cipher.as_ptr(),
                 flags.bits(),
             ))
-            .map(Pkcs7)
+            .map(|ptr| Pkcs7::from_ptr(ptr))
         }
     }
 
@@ -173,7 +173,7 @@ impl Pkcs7 {
                 input_bio.as_ptr(),
                 flags.bits(),
             ))
-            .map(Pkcs7)
+            .map(|ptr| Pkcs7::from_ptr(ptr))
         }
     }
 }

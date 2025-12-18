@@ -80,7 +80,7 @@ impl X509StoreBuilder {
         unsafe {
             ffi::init();
 
-            cvt_p(ffi::X509_STORE_new()).map(X509StoreBuilder)
+            cvt_p(ffi::X509_STORE_new()).map(|ptr| X509StoreBuilder::from_ptr(ptr))
         }
     }
 
