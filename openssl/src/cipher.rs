@@ -33,7 +33,7 @@ cfg_if! {
             }
         }
 
-        impl ForeignType for Cipher {
+        unsafe impl ForeignType for Cipher {
             type CType = ffi::EVP_CIPHER;
             type Ref = CipherRef;
 
@@ -535,7 +535,7 @@ impl Cipher {
 /// A reference to a [`Cipher`].
 pub struct CipherRef(Opaque);
 
-impl ForeignTypeRef for CipherRef {
+unsafe impl ForeignTypeRef for CipherRef {
     type CType = ffi::EVP_CIPHER;
 }
 

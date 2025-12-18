@@ -196,7 +196,7 @@ impl Dsa<Params> {
     pub fn from_pqg(p: BigNum, q: BigNum, g: BigNum) -> Result<Dsa<Params>, ErrorStack> {
         unsafe {
             let dsa = Dsa::from_ptr(cvt_p(ffi::DSA_new())?);
-            cvt(DSA_set0_pqg(dsa.0, p.as_ptr(), q.as_ptr(), g.as_ptr()))?;
+            cvt(DSA_set0_pqg(dsa.as_ptr(), p.as_ptr(), q.as_ptr(), g.as_ptr()))?;
             mem::forget((p, q, g));
             Ok(dsa)
         }
@@ -209,7 +209,7 @@ impl Dsa<Params> {
         unsafe {
             let dsa = Dsa::from_ptr(cvt_p(ffi::DSA_new())?);
             cvt(ffi::DSA_generate_parameters_ex(
-                dsa.0,
+                dsa.as_ptr(),
                 bits as BitType,
                 ptr::null(),
                 0,
@@ -217,6 +217,7 @@ impl Dsa<Params> {
                 ptr::null_mut(),
                 ptr::null_mut(),
             ))?;
+            cvt(ffi::DSA_generate_key(dsa.as_ptr()))?;
             Ok(dsa)
         }
     }
@@ -225,7 +226,7 @@ impl Dsa<Params> {
     #[corresponds(DSA_generate_key)]
     pub fn generate_key(self) -> Result<Dsa<Private>, ErrorStack> {
         unsafe {
-            let dsa_ptr = self.0;
+            let dsa_ptr = self.as_ptr();
             cvt(ffi::DSA_generate_key(dsa_ptr))?;
             mem::forget(self);
             Ok(Dsa::from_ptr(dsa_ptr))
@@ -257,9 +258,18 @@ impl Dsa<Private> {
         ffi::init();
         unsafe {
             let dsa = Dsa::from_ptr(cvt_p(ffi::DSA_new())?);
-            cvt(DSA_set0_pqg(dsa.0, p.as_ptr(), q.as_ptr(), g.as_ptr()))?;
+            cvt(DSA_set0_pqg(
+                dsa.as_ptr(),
+                p.as_ptr(),
+                q.as_ptr(),
+                g.as_ptr(),
+            ))?;
             mem::forget((p, q, g));
-            cvt(DSA_set0_key(dsa.0, pub_key.as_ptr(), priv_key.as_ptr()))?;
+            cvt(DSA_set0_key(
+                dsa.as_ptr(),
+                pub_key.as_ptr(),
+                priv_key.as_ptr(),
+            ))?;
             mem::forget((pub_key, priv_key));
             Ok(dsa)
         }
@@ -298,9 +308,18 @@ impl Dsa<Public> {
         ffi::init();
         unsafe {
             let dsa = Dsa::from_ptr(cvt_p(ffi::DSA_new())?);
-            cvt(DSA_set0_pqg(dsa.0, p.as_ptr(), q.as_ptr(), g.as_ptr()))?;
+            cvt(DSA_set0_pqg(
+                dsa.as_ptr(),
+                p.as_ptr(),
+                q.as_ptr(),
+                g.as_ptr(),
+            ))?;
             mem::forget((p, q, g));
-            cvt(DSA_set0_key(dsa.0, pub_key.as_ptr(), ptr::null_mut()))?;
+            cvt(DSA_set0_key(
+                dsa.as_ptr(),
+                pub_key.as_ptr(),
+                ptr::null_mut(),
+            ))?;
             mem::forget(pub_key);
             Ok(dsa)
         }
